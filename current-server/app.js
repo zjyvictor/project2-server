@@ -22,6 +22,28 @@ function rowToObject(row){
     };  
 }
 
+
+app.get('/allliveflights', (request, response) => {
+    const query = 'SELECT airlines, flightnumber, departure, arrival, id FROM flight WHERE is_deleted = 0';
+    connection.query(query, null,(errors, rows)=>{
+        response.send({
+            ok: true,
+            flights: rows.map(rowToObject),
+        });
+    });
+});
+
+app.get('/airlines/:airlines', (request, response) => {
+    const query = 'SELECT airlines, flightnumber, departure, arrival, id FROM flight WHERE is_deleted = 0 AND airlines = ?';
+    const params = [request.params.airlines];
+    connection.query(query, params,(errors, rows)=>{
+        response.send({
+            ok: true,
+            flights: rows.map(rowToObject),
+        });
+    });
+});
+
 app.get('/flightnumber/:flightnumber', (request, response) => {
     const query = 'SELECT airlines, flightnumber, departure, arrival, id FROM flight WHERE is_deleted = 0 AND flightnumber = ?';
     const params = [request.params.flightnumber];
